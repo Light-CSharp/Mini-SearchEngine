@@ -1,4 +1,4 @@
-﻿namespace Mini_SearchEngine
+﻿namespace Mini_SearchEngine.App
 {
     public class App
     {
