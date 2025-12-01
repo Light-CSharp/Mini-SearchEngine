@@ -4,6 +4,13 @@ namespace XUnitTest_Mini_SearchEngine
 {
     public class XUnitTest
     {
+        [Fact]
+        public void FileReadReturnNull()
+        {
+            Assert.Null(TextSource.FromFile(null!));
+            Assert.Null(TextSource.FromString(null!));
+        }
+
         [Theory]
         [InlineData(@"C:\Users\Broky\OneDrive\Desktop\Тесты для поискового движка\Проверка изменения пути\Первый тест.txt")]
         [InlineData("C:\\Users\\Broky\\OneDrive\\Desktop\\Тесты для поискового движка\\Проверка изменения пути\\Второй тест.txt")]
