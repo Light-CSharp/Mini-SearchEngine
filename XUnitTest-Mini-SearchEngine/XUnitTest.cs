@@ -14,5 +14,28 @@ namespace XUnitTest_Mini_SearchEngine
         {
             Assert.NotNull(TextSource.FromFile(path));
         }
+
+
+        [Fact]
+        public void TextNormalizerReturnNull()
+        {
+            Assert.Null(TextNormalizer.Normalize(null!));
+            Assert.Null(TextNormalizer.Normalize("!!!!!! .... ????? \v\v\v\v"));
+        }
+
+        [Theory]
+        [InlineData("\"Привет, друг!\"")]
+        [InlineData("... Вот и настал конец данной истории ... \n -- но что же дальше?")]
+        [InlineData("\'Амбициозность\',        \n\t\v что имеется в виду под" + " этим словом?")]
+        public void TextNormalizerIsCorrect(string text)
+        {
+            string normalizeText = TextNormalizer.Normalize(text)!;
+
+            Assert.DoesNotContain("\"", normalizeText);
+            Assert.DoesNotContain("\'", normalizeText);
+
+            Assert.DoesNotMatch(@"[,\.\?!:;-]", normalizeText);
+            Assert.DoesNotContain("  ", normalizeText);
+        }
     }
 }
