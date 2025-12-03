@@ -7,7 +7,7 @@
         /// </summary>
         /// <param name="text">Текст, который будет разбит на токены.</param>
         /// <returns></returns>
-        public static string[] GetTokens(string text)
+        public static string[] GetTokens(string? text)
         {
             if (string.IsNullOrEmpty(text))
             {
