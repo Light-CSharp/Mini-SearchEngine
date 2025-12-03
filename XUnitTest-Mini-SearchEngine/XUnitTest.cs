@@ -1,4 +1,5 @@
 ﻿using Mini_SearchEngine;
+using Mini_SearchEngine.Basic_logic;
 
 namespace XUnitTest_Mini_SearchEngine
 {
@@ -43,6 +44,22 @@ namespace XUnitTest_Mini_SearchEngine
 
             Assert.DoesNotMatch(@"[,\.\?!:;-]", normalizeText);
             Assert.DoesNotContain("  ", normalizeText);
+        }
+
+        [Fact]
+        public void TokenizerReturnNull()
+        {
+            Assert.Equal([], Tokenizer.GetTokens("             "));
+            Assert.Equal([], Tokenizer.GetTokens(null!));
+        }
+
+        [Theory]
+        [InlineData("привет друг", new string[] { "привет", "друг" })]
+        [InlineData("вот и настал    конец данной    истории", 
+            new string[] { "вот", "и", "настал", "конец", "данной", "истории" })]
+        public void TokenizerGetTokensIsCorrect(string text, string[] outputArray)
+        {
+            Assert.Equal(outputArray, Tokenizer.GetTokens(text));
         }
     }
 }
