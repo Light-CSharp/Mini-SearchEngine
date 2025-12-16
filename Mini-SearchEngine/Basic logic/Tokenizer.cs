@@ -6,7 +6,7 @@
         /// Возвращает массив токенов, чтобы движок обработал слова.
         /// </summary>
         /// <param name="text">Текст, который будет разбит на токены.</param>
-        /// <returns></returns>
+        /// <returns>Массив токенов (слов).</returns>
         public static string[] GetTokens(string? text)
         {
             if (string.IsNullOrEmpty(text))

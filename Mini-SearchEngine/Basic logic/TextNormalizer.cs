@@ -8,8 +8,8 @@ namespace Mini_SearchEngine
         /// Возвращает текст, который был нормализован по нижниму регистру, 
         /// а также с удалением знаков препинания. 
         /// </summary>
-        /// <param name="text">Текст, который будет нормализован</param>
-        /// <returns></returns>
+        /// <param name="text">Текст, который будет нормализован.</param>
+        /// <returns>Нормализованный текст.</returns>
         public static string? Normalize(string text)
         {
             if (string.IsNullOrEmpty(text))

@@ -33,7 +33,7 @@
         /// Ищет пересечение токенов в документах по запросу.
         /// </summary>
         /// <param name="query">Запрос, в котором ищется нужное нам слово.</param>
-        /// <returns>Возвращается id документов, в которых был запрос.</returns>
+        /// <returns>id документов, в которых был запрос.</returns>
         public HashSet<int> Search(string? query)
         {
             if (string.IsNullOrEmpty(query))

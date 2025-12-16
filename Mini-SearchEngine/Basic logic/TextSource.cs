@@ -31,7 +31,7 @@ namespace Mini_SearchEngine
         /// Возвращает входимую строку, нужен для архитектуры при работе других классов.
         /// </summary>
         /// <param name="text">Текст, который будет возвращён.</param>
-        /// <returns></returns>
+        /// <returns>Вводимый текст.</returns>
         public static string? FromString(string text) => text;
     }
 }
