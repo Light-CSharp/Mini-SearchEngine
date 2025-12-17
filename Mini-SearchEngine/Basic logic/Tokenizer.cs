@@ -2,6 +2,11 @@
 {
     public static class Tokenizer
     {
+        private static readonly HashSet<string> StopWords =
+        [
+            "и", "или", "а", "но", "в", "на", "с", "по", "я", "ты", "он", "это", "тот", "как", "что"
+        ];
+
         /// <summary>
         /// Возвращает массив токенов, чтобы движок обработал слова.
         /// </summary>
@@ -15,7 +20,18 @@
                 return [];
             }
 
-            return text.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+            string[] tokens = text.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+
+            List<string> result = [];
+            foreach (string token in tokens)
+            {
+                if (!StopWords.Contains(token))
+                {
+                    result.Add(token);
+                }
+            }
+
+            return [..result];
         }
     }
 }
