@@ -1,10 +1,37 @@
-﻿using System.Xml.XPath;
-
-namespace Mini_SearchEngine.Basic_logic
+﻿namespace Mini_SearchEngine.Basic_logic
 {
     public class SearchEngine
     {
+        private readonly HashSet<int> allDocuments = [];
         private readonly Dictionary<string, HashSet<int>> index = [];
+
+        /// <summary>
+        /// Возвращает логическое значение на основе проверки запроса.
+        /// </summary>
+        /// <param name="query">Запрос, который будет проверен.</param>
+        /// <returns>Корректность запроса.</returns>
+        private static bool QueryIsCorrect(string query)
+        {
+            if (string.IsNullOrEmpty(query))
+            {
+                MessageAssistant.RedMessage("Пустой запрос!");
+                return false;
+            }
+
+            query = TextNormalizer.Normalize(query)!;
+            if (string.IsNullOrEmpty(query))
+            {
+                return false;
+            }
+
+            string[] tokens = Tokenizer.GetTokens(query);
+            if (tokens.Length is 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
 
         /// <summary>
         /// Добавляем документ, добавив каждое слово и обозначив id документа.
@@ -29,6 +56,8 @@ namespace Mini_SearchEngine.Basic_logic
                 }
                 documents.Add(documentId);
             }
+
+            allDocuments.Add(documentId);
         }
 
         /// <summary>
@@ -38,31 +67,20 @@ namespace Mini_SearchEngine.Basic_logic
         /// <returns>id документов, в которых был запрос.</returns>
         public HashSet<int> Search(string? query)
         {
-            if (string.IsNullOrEmpty(query))
-            {
-                MessageAssistant.RedMessage("Пустой запрос!");
-                return [];
-            }
-
-            query = TextNormalizer.Normalize(query!);
-            if (string.IsNullOrEmpty(query))
+            if (!QueryIsCorrect(query!))
             {
                 return [];
             }
 
+            // Получаем первое множество.
             string[] tokens = Tokenizer.GetTokens(query);
-            if (tokens.Length is 0)
-            {
-                return [];
-            }
-
             if (!index.TryGetValue(tokens[0], out HashSet<int>? documents))
             {
                 return [];
             }
             HashSet<int> result = [.. documents];
 
-            // Пересекаем хешсеты с первым, чтобы выяснить пересечение в документах.
+            // Пересекаем первое множество с остальными, чтобы получить пересечение документов.
             for (int i = 1; i < tokens.Length; i++)
             {
                 if (!index.TryGetValue(tokens[i], out HashSet<int>? currentSet))
@@ -76,6 +94,37 @@ namespace Mini_SearchEngine.Basic_logic
                     return [];
                 }
             }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Ищет документы, в которых нет слов из запроса.
+        /// </summary>
+        /// <param name="query">Запрос, из которого мы берём слова на исключения.</param>
+        /// <returns>id документов, в которых не было запроса.</returns>
+        public HashSet<int> SearchExcluding(string? query)
+        {
+            if (!QueryIsCorrect(query!))
+            {
+                return [];
+            }
+
+            HashSet<int> exclusionDocuments = [];
+            string[] tokens = Tokenizer.GetTokens(query);
+            foreach (string token in tokens)
+            {
+                // Если слова нет в ключе, то пропускаем.
+                if (!index.TryGetValue(token, out HashSet<int>? currentHashSet))
+                {
+                    continue;
+                }
+
+                exclusionDocuments.UnionWith(currentHashSet);
+            }
+
+            HashSet<int> result = [..allDocuments];
+            result.ExceptWith(exclusionDocuments);
 
             return result;
         }
