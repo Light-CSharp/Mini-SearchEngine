@@ -47,19 +47,44 @@ namespace XUnitTest_Mini_SearchEngine
         }
 
         [Fact]
-        public void TokenizerReturnNull()
+        public void TokenizerReturnEmpty()
         {
-            Assert.Equal([], Tokenizer.GetTokens("             "));
-            Assert.Equal([], Tokenizer.GetTokens(null!));
+            Assert.Empty(Tokenizer.GetTokens("             "));
+            Assert.Empty(Tokenizer.GetTokens(null!));
+            Assert.Empty(Tokenizer.GetTokens("и ты"));
         }
 
         [Theory]
         [InlineData("привет друг", new string[] { "привет", "друг" })]
-        [InlineData("вот и настал    конец данной    истории", 
-            new string[] { "вот", "и", "настал", "конец", "данной", "истории" })]
+        [InlineData("вот и настал    конец данной    истории",
+            new string[] { "вот", "настал", "конец", "данной", "истории" })]
         public void TokenizerGetTokensIsCorrect(string text, string[] outputArray)
         {
             Assert.Equal(outputArray, Tokenizer.GetTokens(text));
+        }
+
+        [Fact]
+        public void SearchEngineSearchReturnEmpty()
+        {
+            SearchEngine searchEngine = new();
+            searchEngine.AddDocument(["a"], 1);
+
+            Assert.Empty(searchEngine.Search(null!));
+            Assert.Empty(searchEngine.Search("    \v\t"));
+            Assert.Empty(searchEngine.Search("и что ты"));
+            Assert.Empty(searchEngine.Search("B"));
+        }
+
+        [Theory]
+        [InlineData(new string[] { "Привет", "Чувак" }, 1, "Чувак")]
+        [InlineData(new string[] { "Быть" }, 3, "Быть")]
+        [InlineData(new string[] { "Невероятно", "Металл", "Сжёг" }, 3, "Сжёг")]
+        public void SearchEngineSearchReturnIsCorrect(string[] tokens, int documentID, string query)
+        {
+            SearchEngine searchEngine = new();
+            searchEngine.AddDocument(tokens, documentID);
+
+            Assert.NotEmpty(searchEngine.Search(query));
         }
     }
 }
