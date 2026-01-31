@@ -3,7 +3,37 @@
     public class SearchEngine
     {
         private readonly HashSet<int> allDocuments = [];
+        private int documentID = default;
+
         private readonly Dictionary<string, HashSet<int>> index = [];
+
+        /// <summary>
+        /// Добавляем документ, добавив каждое слово и обозначив id документа.
+        /// </summary>
+        /// <param name="tokens">Массив слов.</param>
+        /// <param name="documentId">id документа, показывает на документ.</param>
+        public void AddDocument(string[] tokens)
+        {
+            if (tokens.Length is 0)
+            {
+                MessageAssistant.RedMessage("Массив токенов пустой!");
+                return;
+            }
+
+            foreach (string token in tokens)
+            {
+                // Если ключ-пары нет, то добавляем пустое множество по ключу и id документа.
+                if (!index.TryGetValue(token, out HashSet<int>? documents))
+                {
+                    documents = [];
+                    index[token] = documents;
+                }
+                documents.Add(documentID);
+            }
+            allDocuments.Add(documentID);
+
+            documentID++;
+        }
 
         /// <summary>
         /// Возвращает логическое значение на основе проверки запроса.
@@ -31,33 +61,6 @@
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Добавляем документ, добавив каждое слово и обозначив id документа.
-        /// </summary>
-        /// <param name="tokens">Массив слов.</param>
-        /// <param name="documentId">id документа, показывает на документ.</param>
-        public void AddDocument(string[] tokens, int documentId)
-        {
-            if (tokens.Length is 0)
-            {
-                MessageAssistant.RedMessage("Массив токенов пустой!");
-                return;
-            }
-
-            foreach (string token in tokens)
-            {
-                // Если ключ-пары нет, то добавляем пустое множество по ключу и id документа.
-                if (!index.TryGetValue(token, out HashSet<int>? documents))
-                {
-                    documents = [];
-                    index[token] = documents;
-                }
-                documents.Add(documentId);
-            }
-
-            allDocuments.Add(documentId);
         }
 
         /// <summary>
